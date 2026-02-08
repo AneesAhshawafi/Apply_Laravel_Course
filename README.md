@@ -9,7 +9,7 @@ Course Link: [Laravel 12 Full Course Playlist](https://youtube.com/playlist?list
 
 How to Install and Run
 1. Clone the repository:
-   `git clone [REPO_URL]`
+   `git clone https://github.com/AneesAhshawafi/Apply_Laravel_Course.git`
 2. Install dependencies:
    `composer install`
 3. Create your environment file:
