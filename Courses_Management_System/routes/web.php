@@ -7,6 +7,11 @@ use App\Models\Course;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TrainCourseController;
 
+
+route::get('hi',function(){
+
+})->middleware('PoliceMan');
+
 Route::get('/', function () {
     return view('home');
 });
@@ -19,6 +24,7 @@ Route::resource('courses', CoursesController::class);
 route::get('students/trash', [StudentController::class,'trash'])->name('students.trash');
 route::get('students/delete/{id}', [StudentController::class,'delete'])->name('students.delete');
 route::get('students/restore/{id}', [StudentController::class,'restore'])->name('students.restore');
+route::post('students/search', [StudentController::class, 'search'])->name('students.search');
 Route::resource('students',StudentController::class);
 
 route::get('training_courses/trash', [TrainCourseController::class,'trash'])->name('training_courses.trash');

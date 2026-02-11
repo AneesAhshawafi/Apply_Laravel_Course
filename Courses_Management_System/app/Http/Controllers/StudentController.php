@@ -15,7 +15,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::orderBy('created_at', 'desc')->get();
+        $students = Student::orderBy('created_at', 'desc')->paginate(10);
         return view('students.index', ['students' => $students]);
     }
 
@@ -99,7 +99,7 @@ class StudentController extends Controller
             $student->image = 'images/students/' . $imageName;
         }
         $student->save();
-        return redirect()->route('students.index')->with('success','تم تعديل بيانات الطالب بنجاح');
+        return redirect()->route('students.index')->with('success', 'تم تعديل بيانات الطالب بنجاح');
 
     }
 
@@ -110,23 +110,33 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
         $student->forceDelete();
-        return redirect()->route('students.index')->with('success','تم حذف الطالب بنجاح');
+        return redirect()->route('students.index')->with('success', 'تم حذف الطالب بنجاح');
     }
     public function delete($id)
     {
         $student = Student::find($id);
         $student->delete();
-        return redirect()->route('students.index')->with('success','تم النقل الى سلة المهملات بنجاح');
+        return redirect()->route('students.index')->with('success', 'تم النقل الى سلة المهملات بنجاح');
     }
     public function trash()
     {
-        $students=Student::onlyTrashed()->get();
+        $students = Student::onlyTrashed()->get();
         return view('students.trash', compact('students'));
     }
     public function restore($id)
     {
         $student = Student::onlyTrashed()->find($id)->restore();
-        return redirect()->back()->with('success','تم استعادة البيانات بنجاح');
+        return redirect()->back()->with('success', 'تم استعادة البيانات بنجاح');
+
+    }
+    public function search(Request $request)
+    {
+        if ($request->ajax()) {
+            $students = Student::where('name', 'like', "%$request->name%")->get();
+            return view('students.search_by_name', compact('students'));
+        }
+        // $students = Student::where('name', $request->name)->get();
+        // return view('')
 
     }
 }
