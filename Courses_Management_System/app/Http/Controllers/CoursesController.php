@@ -13,7 +13,8 @@ class CoursesController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
+        samhoon();
         return view('courses.index', [
             'courses' => Course::orderBy('id', 'desc')->get()
         ]);

@@ -3,22 +3,27 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>@yield('title', 'إدارة الكورسات')</title>
+  <title>@yield('title', __('master.title'))</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{{asset('admin/plugins/fontawesome-free/css/all.min.css')}}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('admin/dist/css/adminlte.min.css')}}">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="{{asset('admin/fonts/SansPro/SansPro.min.css')}}">
-  <link rel="stylesheet" href="{{asset('admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css')}}">
-  <link rel="stylesheet" href="{{asset('admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css')}}">
+
+  @if(app()->getLocale() == 'ar')
+    <!-- RTL CSS for Arabic -->
+    <link rel="stylesheet" href="{{asset('admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css')}}">
+  @endif
+
   <link rel="stylesheet" href="{{asset('admin/css/mycustomstyle.css')}}">
   <style>
     /* 
@@ -71,17 +76,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="{{route('home')}}" class="nav-link">الرئيسية </a>
+          <a href="{{route('home')}}" class="nav-link">{{ __('master.home') }} </a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">تواصل</a>
+          <a href="#" class="nav-link">{{ __('master.contact') }}</a>
         </li>
+
       </ul>
 
       <!-- SEARCH FORM -->
       <form class="form-inline ml-3">
         <div class="input-group input-group-sm">
-          <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+          <input class="form-control form-control-navbar" type="search" placeholder="{{ __('master.search') }}"
+            aria-label="{{ __('master.search') }}">
           <div class="input-group-append">
             <button class="btn btn-navbar" type="submit">
               <i class="fas fa-search"></i>
@@ -89,6 +96,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </div>
         </div>
       </form>
+      <!-- Language Switcher -->
+      <li class="nav-item dropdown" style="margin-right:-10px">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="fas fa-language"></i>
+          <span class="badge badge-info navbar-badge">{{ strtoupper(app()->getLocale()) }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-left">
+          <a href="{{ route('ar') }}" class="dropdown-item">
+            @if (session()->get('locale') == 'ar')
+                <i class="fas fa-check "></i>
+            @endif
+            العربية
+          </a>
+          <a href="{{ route('en') }}" class="dropdown-item">
+            @if (session()->get('locale') == 'en')
+              <i class="fas fa-check "></i>
+            @endif
+            English
+          </a>
+        </div>
+      </li>
 
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
@@ -96,7 +124,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-comments"></i>
-            <span class="badge badge-danger navbar-badge">3</span>
+            <!-- <span class="badge badge-danger navbar-badge">3</span> -->
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <a href="#" class="dropdown-item">
@@ -150,34 +178,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <!-- Message End -->
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+            <a href="#" class="dropdown-item dropdown-footer">{{ __('master.see_all_messages') }}</a>
           </div>
         </li>
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
-            <span class="badge badge-warning navbar-badge">15</span>
+            <!-- <span class="badge badge-warning navbar-badge">15</span> -->
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <span class="dropdown-header">15 Notifications</span>
+            <span class="dropdown-header">15 {{ __('master.notifications') }}</span>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">
-              <i class="fas fa-envelope mr-2"></i> 4 new messages
+              <i class="fas fa-envelope mr-2"></i> 4 {{ __('master.new_messages') }}
               <span class="float-right text-muted text-sm">3 mins</span>
             </a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">
-              <i class="fas fa-users mr-2"></i> 8 friend requests
+              <i class="fas fa-users mr-2"></i> 8 {{ __('master.friend_requests') }}
               <span class="float-right text-muted text-sm">12 hours</span>
             </a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">
-              <i class="fas fa-file mr-2"></i> 3 new reports
+              <i class="fas fa-file mr-2"></i> 3 {{ __('master.new_reports') }}
               <span class="float-right text-muted text-sm">2 days</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            <a href="#" class="dropdown-item dropdown-footer">{{ __('master.see_all_notifications') }}</a>
           </div>
         </li>
         <li class="nav-item">
@@ -194,7 +222,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <a href="index3.html" class="brand-link">
         <img src="{{asset('admin/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo"
           class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">إدارة الكورسات</span>
+        <span class="brand-text font-weight-light">{{ __('master.title') }}</span>
       </a>
 
       <!-- Sidebar -->
@@ -205,7 +233,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <img src="{{asset('admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="#" class="d-block">كوديفيكس</a>
+            <a href="#" class="d-block">{{ __('master.codefix') }}</a>
           </div>
         </div>
 
@@ -218,7 +246,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <a href="{{route('home')}}" class="nav-link active">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                  الرئيسية
+                  {{ __('master.home') }}
                   <i class="right fas fa-angle-left"></i>
                 </p>
               </a>
@@ -227,25 +255,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <li class="nav-item">
                   <a href="{{ route('courses.index') }}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>إدارة الكورسات</p>
+                    <p>{{ __('master.courses_management') }}</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="{{ route('students.index') }}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>إدارة الطلاب</p>
+                    <p>{{ __('master.students_management') }}</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="{{ route('training_courses.index') }}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>إدارة الدورات التدريبية</p>
+                    <p>{{ __('master.training_courses_management') }}</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>إدارة الحجوزات</p>
+                    <p>{{ __('master.reservations_management') }}</p>
                   </a>
                 </li>
                 @show
@@ -282,8 +310,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
       <div class="p-3">
-        <h5>Title</h5>
-        <p>Sidebar content</p>
+        <h5>{{ __('master.control_sidebar_title') }}</h5>
+        <p>{{ __('master.control_sidebar_content') }}</p>
       </div>
     </aside>
     <!-- /.control-sidebar -->
@@ -292,10 +320,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <footer class="main-footer">
       <!-- To the right -->
       <div class="float-right d-none d-sm-inline">
-        Anything you want
+        {{ __('master.anything_you_want') }}
       </div>
       <!-- Default to the left -->
-      <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+      <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+      {{ __('master.all_rights_reserved') }}
     </footer>
   </div>
   <!-- ./wrapper -->

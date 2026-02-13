@@ -7,14 +7,16 @@ use App\Models\Student;
 use App\Http\Requests\StudentRequest;
 use Carbon\Carbon;
 use App\Models\Country;
-
+use App\Traits\GeneralTraits;
 class StudentController extends Controller
 {
+    use GeneralTraits;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->Anees();
         $students = Student::orderBy('created_at', 'desc')->paginate(10);
         return view('students.index', ['students' => $students]);
     }

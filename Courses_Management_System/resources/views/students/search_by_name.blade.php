@@ -2,17 +2,17 @@
                     @if(isset($students) && $students->isNotEmpty())
                         <thead style="background-color:beige;">
                             <tr>
-                                <th>الرقم</th>
-                                <th>الصورة</th>
-                                <th>اسم الطالب</th>
-                                <th>الحالة</th>
-                                <th>رقم الهاتف</th>
-                                <th>العنوان</th>
-                                <th>الدولة</th>
-                                <th>تاريخ الاضافة</th>
-                                <th>تاريخ آخر تحديث</th>
-                                <th>ملاحظة</th>
-                                <th>العمليات</th>
+                                <th>{{ __('students/search_by_name.number') }}</th>
+                                <th>{{ __('students/search_by_name.image') }}</th>
+                                <th>{{ __('students/search_by_name.student_name') }}</th>
+                                <th>{{ __('students/search_by_name.status') }}</th>
+                                <th>{{ __('students/search_by_name.phone') }}</th>
+                                <th>{{ __('students/search_by_name.address') }}</th>
+                                <th>{{ __('students/search_by_name.country') }}</th>
+                                <th>{{ __('students/search_by_name.created_at') }}</th>
+                                <th>{{ __('students/search_by_name.updated_at') }}</th>
+                                <th>{{ __('students/search_by_name.note') }}</th>
+                                <th>{{ __('students/search_by_name.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,11 +35,11 @@
                                     <td>
                                         @if($student->active)
                                             <span class="badge badge-active">
-                                                <span class=""></span> فعال
+                                                <span class=""></span> {{ __('students/search_by_name.active') }}
                                             </span>
                                         @else
                                             <span class="badge badge-inactive">
-                                                <span class=""></span> معطل
+                                                <span class=""></span> {{ __('students/search_by_name.inactive') }}
                                             </span>
                                         @endif
                                     </td>
@@ -52,7 +52,7 @@
 
                                     <td>
                                         <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-primary"
-                                            style="margin: 5px;" title="تعديل">
+                                            style="margin: 5px;" title="{{ __('students/search_by_name.edit') }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('students.destroy', $student->id) }}" method="POST"
@@ -60,16 +60,16 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('هل أنت متأكد من حذف هذا الطالب')" title="حذف نهائياً">
+                                                onclick="return confirm('{{ __('students/search_by_name.confirm_delete') }}')" title="{{ __('students/search_by_name.delete_permanent') }}">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
                                         <a href="{{route('students.delete', $student->id)}}" class="btn btn-sm btn-warning"
-                                            style="margin: 5px;" title="نقل إلى سلة المهملات">
+                                            style="margin: 5px;" title="{{ __('students/search_by_name.delete_trash') }}">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <a href="{{route('students.show', $student->id)}}" class="btn btn-sm btn-warning"
-                                            style="margin: 5px;" title="عرض التفاصيل">
+                                            style="margin: 5px;" title="{{ __('students/search_by_name.show_details') }}">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>
@@ -77,6 +77,6 @@
                             @endforeach
                         </tbody>
                     @else
-                        <p style="text-align: center;color:brown;margin: 10px;">لا يوجد بيانات طلاب حالياً</p>
+                        <p style="text-align: center;color:brown;margin: 10px;">{{ __('students/search_by_name.no_students') }}</p>
                     @endif
                 </table>
