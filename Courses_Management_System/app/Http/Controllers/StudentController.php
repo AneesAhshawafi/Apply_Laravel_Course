@@ -8,6 +8,7 @@ use App\Http\Requests\StudentRequest;
 use Carbon\Carbon;
 use App\Models\Country;
 use App\Traits\GeneralTraits;
+
 class StudentController extends Controller
 {
     use GeneralTraits;
@@ -16,7 +17,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $this->Anees();
+        // $this->Anees();
         $students = Student::orderBy('created_at', 'desc')->paginate(10);
         return view('students.index', ['students' => $students]);
     }
@@ -102,7 +103,6 @@ class StudentController extends Controller
         }
         $student->save();
         return redirect()->route('students.index')->with('success', 'تم تعديل بيانات الطالب بنجاح');
-
     }
 
     /**
@@ -129,12 +129,11 @@ class StudentController extends Controller
     {
         $student = Student::onlyTrashed()->find($id)->restore();
         return redirect()->back()->with('success', 'تم استعادة البيانات بنجاح');
-
     }
     public function search(Request $request)
     {
         if ($request->ajax()) {
-            $students = Student::where('name', 'like', "%$request->name%")->get();
+            $students = Student::where('name', 'like', "%$request->name%")->paginate(10);
             return view('students.search_by_name', compact('students'));
         }
         // $students = Student::where('name', $request->name)->get();

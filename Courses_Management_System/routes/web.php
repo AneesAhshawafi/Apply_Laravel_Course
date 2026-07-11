@@ -8,9 +8,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TrainCourseController;
 
 
-// route::get('hi', function () {
-
-// })->middleware('PoliceMan');
+route::get('hi', function () {})->middleware('PoliceMan');
 
 Route::get('/', function () {
     return view('home');
