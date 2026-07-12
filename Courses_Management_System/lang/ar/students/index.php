@@ -10,7 +10,18 @@ return [
     ],
     'add_new' => 'إضافة طالب جديد',
     'trash' => 'سلة المهملات',
-    'search_placeholder' => 'بحث باسم الطالب',
+    'search' => [
+
+        'search_placeholder' => 'بحث باسم الطالب',
+        'search_by_activaion_status' => 'بحث بحالة التفعيل',
+        'all' => 'الكل',
+        'active' => 'مفعل',
+        'inactive' => 'غير مفعل',
+
+
+
+    ],
+
     'table' => [
         'id' => 'الرقم',
         'image' => 'الصورة',

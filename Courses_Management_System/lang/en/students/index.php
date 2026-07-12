@@ -1,5 +1,7 @@
 <?php
 
+use function Laravel\Prompts\search;
+
 return [
     'page_title' => 'Students',
     'active_nav' => [
@@ -10,7 +12,17 @@ return [
     ],
     'add_new' => 'Add New Student',
     'trash' => 'Trash',
-    'search_placeholder' => 'Search by student name',
+    'search' => [
+
+        'search_placeholder' => 'Search by student name',
+        'search_by_activaion_status' => 'Search by activation status',
+        'all' => 'All',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+
+
+
+    ],
     'table' => [
         'id' => 'ID',
         'image' => 'Image',

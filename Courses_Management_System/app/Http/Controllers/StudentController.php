@@ -8,6 +8,9 @@ use App\Http\Requests\StudentRequest;
 use Carbon\Carbon;
 use App\Models\Country;
 use App\Traits\GeneralTraits;
+use App\Models\User;
+use App\Notifications\CreateStudent;
+use Illuminate\Support\Facades\Notification;
 
 class StudentController extends Controller
 {
@@ -59,6 +62,10 @@ class StudentController extends Controller
             $student->image = null;
         }
         $student->save();
+        //Send Notification to all users that new user has been created
+        $users = User::select("id")->get();
+        $content = "تم اضافة طالب جديد باسم " . $request->name;
+        Notification::send($users, new CreateStudent($request->name, $content));
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح');
     }
 
@@ -133,7 +140,28 @@ class StudentController extends Controller
     public function search(Request $request)
     {
         if ($request->ajax()) {
-            $students = Student::where('name', 'like', "%$request->name%")->paginate(10);
+
+            $studentName = $request->name;
+            $activationStatus = $request->activationStatus;
+            if (empty($studentName)) {
+                $field1 = 'id';
+                $operator1 = '>';
+                $value1 = 0;
+            } else {
+                $field1 = 'name';
+                $operator1 = 'LIKE';
+                $value1 = "%{$studentName}%";
+            }
+            if ($activationStatus == 'all') {
+                $field2 = 'id';
+                $operator2 = '>';
+                $value2 = 0;
+            } else {
+                $field2 = 'active';
+                $operator2 = '=';
+                $value2 = $activationStatus;
+            }
+            $students = Student::where($field1, $operator1, $value1)->where($field2, $operator2, $value2)->paginate(10);
             return view('students.search_by_name', compact('students'));
         }
         // $students = Student::where('name', $request->name)->get();
