@@ -43,6 +43,20 @@ class StudentController extends Controller
         // if (Student::where('name', $request->name)->exists()) {
         //     return redirect()->back()->withErrors(['name' => 'اسم الطالب موجود بالفعل'])->withInput();
         // }
+
+        // //filled and isNotFilled Methods
+        // if ($request->filled("name")) {
+        //     $name = $request->name;
+        // }
+
+        // if ($request->isNotFilled("name")) {
+        //     $name = "Samhoon";
+        // }
+
+        // if ($request->isNotFilled(["name", "phone"])) {
+        //     $name = "Samhoon";
+        //     $phone = "776434968";
+        // }
         $student = new Student();
         $student->name = $request->name;
         $student->phone = $request->phone;
