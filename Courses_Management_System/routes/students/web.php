@@ -9,6 +9,7 @@ use App\Http\Controllers\TrainCourseController;
 use App\Http\Controllers\WelcomeController;
 
 use Illuminate\Http\Request;
+use Psr\Http\Message\ServerRequestInterface; //for PSR-7 
 
 Route::get('welcome', [WelcomeController::class, 'index'])->middleware(['throttle:limit3']);
 // Route::get('welcomeFacde', [WelcomeController::class, 'myCustomFacade']);
@@ -156,10 +157,34 @@ Route::get("/sendheader", function (Request $request) {
 Route::get("/sendheadertome", function (Request $request) {
     $request->headers->set('XAppName', 'Anees Soft');
     $headerValue = $request->header("XAppName");
-    return "Added Memebers to header are: {$headerValue}";
+
     // return response("Hello Anees")->header("AppName", "Exchnage")->header("version", 3);
 });
 
+Route::get("/content-negotiation", function (Request $request) {
+    $accepetedContentTypes = $request->getAcceptableContentTypes();
+    $preferred = $request->prefers(['text/html', 'application/json']);
+    return response()->json(["preferred" => $preferred, "accepetedContentTypes" => $accepetedContentTypes]);
+    if ($request->expectsJson()) {
+        return response()->json(["preferred" => $preferred, "accepetedContentTypes" => $accepetedContentTypes]);
+    }
+    if ($request->accepts(["text/html", "application/xml"]))
+        return [
+            "accepted types" => $accepetedContentTypes
+        ];
+});
+
+Route::get("PSR-7", function (ServerRequestInterface $request) {
+    $method = $request->getMethod();
+    $url = $request->getUri();
+    $header = $request->getHeaders();
+
+    return response()->json([
+        "method" => $method,
+        "url" => $url,
+        "headers" => $header
+    ]);
+});
 Route::fallback(function () {
     return "Not Found!";
 });
