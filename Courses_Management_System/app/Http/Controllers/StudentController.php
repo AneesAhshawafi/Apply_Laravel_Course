@@ -67,10 +67,24 @@ class StudentController extends Controller
         $student->created_at = Carbon::now();
         $student->updated_at = Carbon::now();
         if ($request->hasFile('image')) {
+            //accessing file ways
             $image = $request->file('image');
+            // $image = $request->image;
+            // return response()->json([
+            //     "size" => $image->getSize(),
+            //     "path" => $image->getRealPath(),
+            //     "is valid" => $image->isValid(),
+
+            // ]);
+
+
             $extention = strtolower($image->getClientOriginalExtension());
             $imageName = time() . '_' . $image->getClientOriginalName();
+            //way 1
             $image->move(public_path('images/students'), $imageName);
+            //way 2
+            //$path= $image->store("images");//store the file in "root::storage\app\private\images" with automatic generatied file name and return the path in side the privte folder
+            // $path = $image->storeAs("images", $imageName); //store the file in "root::storage\app\private\images" with the name I passed $iamgeName and return the path in side the privte folder
             $student->image = 'images/students/' . $imageName;
         } else {
             $student->image = null;

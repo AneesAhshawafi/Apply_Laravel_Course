@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name', 255);
             $table->string('phone', 255)->unique();
-            $table->tinyInteger('active')->default(1); 
+            $table->tinyInteger('active')->default(1);
             $table->string('image')->nullable();
-            $table->binary('image')->nullable(); // أفضل حفظ مسار/اسم الملف هنا بدلاً من الباينري
+            // $table->binary('image')->nullable(); // أفضل حفظ مسار/اسم الملف هنا بدلاً من الباينري
             $table->string('address', 500)->nullable();
             $table->string('notes', 255)->nullable();
             $table->softDeletes();
