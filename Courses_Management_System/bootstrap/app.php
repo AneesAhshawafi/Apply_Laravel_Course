@@ -20,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'PoliceMan' => PoliceMan::class
         ]); //route middleware on specific route
         $middleware->web(append: [SetLocale::class]); //global middelware
+        // // Inactive the encryption for a specified cookie by its name
+        // $middleware->encryptCookies(except: [
+        //     'cookie_name',
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
