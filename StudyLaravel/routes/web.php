@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Flight;
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\CountryController;
+
+dump("8");
 // Route::get('/anees', function () {
 //     return "Hello Anis";
 // });
@@ -57,5 +59,5 @@ route::resource('countries', CountryController::class)->except(['show']);
 //     'countries' => CountryController::class,    
 // ]);
 
-route::get('flights/delete/{id}',[ResFlightController::class,'delete'])->name('flights.delete');
-route::get('flights/restore/{id}',[ResFlightController::class,'restore'])->name('flights.restore');
+route::get('flights/delete/{id}', [ResFlightController::class, 'delete'])->name('flights.delete');
+route::get('flights/restore/{id}', [ResFlightController::class, 'restore'])->name('flights.restore');
