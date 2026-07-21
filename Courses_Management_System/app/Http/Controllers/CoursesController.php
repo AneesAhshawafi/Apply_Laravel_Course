@@ -80,6 +80,40 @@ class CoursesController extends Controller
         //     "after merging " => $request->all()
         // ]);
         // //end lesson 96
+        //start lesson 101
+        // Sometimes you may wish to redirect the user to their previous location, such as
+        // when a submitted form is invalid. You may do so by using the global back helper
+        // function. Since this feature utilizes the session, make sure the route calling the back
+        // function is using the web middleware group:
+        // return back()->withInput();
+        // return redirect()->route('courses.create');
+        // return redirect()->route('courses.create')->withInput();
+        //         If your route has parameters, you may pass them as the second argument to the route method:
+
+        // For a route with the following URI: /profile/{id}
+
+        // return redirect()->route('profile', ['id' => 1]);
+
+        //         Redirecting to Controller Actions
+        // You may also generate redirects to controller actions. 
+        // To do so, pass the controller and action name to the action method:
+
+        // use App\Http\Controllers\UserController;
+
+        // return redirect()->action([UserController::class, 'index']);
+
+        // If your controller route requires parameters, 
+        // you may pass them as the second argument to the action method:
+
+        // return redirect()->action(
+        //     [UserController::class, 'profile'], ['id' => 1]
+        // );
+
+        //         Redirecting to External Domains
+        // Sometimes you may need to redirect to a domain outside of your application. You may do so by calling the away method, which creates a RedirectResponse without any additional URL encoding, validation, or verification:
+
+        // return redirect()->away('https://www.google.com');
+        // end lesson 101
 
         if (Course::where('name', $request->name)->exists()) {
             return redirect()->back()->withErrors(['name' => 'اسم الكورس موجود بالفعل'])->withInput();
@@ -88,6 +122,9 @@ class CoursesController extends Controller
             'name' => $request->name,
             'active' => $request->active
         ]);
+        // the following tow lines are instead of the third line 
+        // $request->session()->flash('success', 'تم إضافة الكورس بنجاح');
+        // return redirect()->route('courses.index');
         return redirect()->route('courses.index')->with('success', 'تم إضافة الكورس بنجاح');
     }
 

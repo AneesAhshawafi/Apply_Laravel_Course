@@ -10,6 +10,8 @@ use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Cookie;
 
+use Illuminate\Http\RedirectResponse;
+
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface; //for PSR-7 
 Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_revalidate=600;etag')->group(function () {
@@ -18,8 +20,14 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
     // Route::get('welcomeFacde', [WelcomeController::class, 'myCustomFacade']);
 
     route::get('hi', function () {})->middleware('PoliceMan');
-    Route::redirect('welcome', "hi", 302);
-    Route::permanentRedirect('welcome', "hi");
+    //redirect route
+    // Route::redirect('welcome', "hi", 302);
+    // Route::permanentRedirect('welcome', "hi");
+
+    //redirect response
+    Route::get('/welcome', function () {
+        return redirect('hi');
+    });
     // Accessing the current route
     Route::get('getmyrouteinfo/{username}', [WelcomeController::class, "getMyRouteInfo"])->name("get_myroute_info");
 
