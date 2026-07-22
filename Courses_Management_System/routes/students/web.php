@@ -54,6 +54,7 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
     })->name('en');
 
 
+
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('courses/trash', [CoursesController::class, 'trash'])->name('courses.trash');
     Route::get('courses/delete/{id}', [CoursesController::class, 'delete'])->name('courses.delete');
@@ -279,6 +280,69 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
 
     // If you do not yet have an instance of the outgoing response, you may use the Cookie facade's expire method to expire a cookie:
 
+    //Lesson 102
+    Route::get('jsonp', function (Request $request) {
+        return response()->json([
+            'name' => 'name',
+            'age' => 12,
+        ])->withCallback($request->input("callback"));
+    });
+    Route::get("force_download_file", function () {
+        $pathToFile = public_path("images/students/Anees CV.pdf");
+        // return response()->download($pathToFile);
+
+        return response()->download($pathToFile, "Anees CV.pdf", ["Content-type" => "application/pdf"]);
+    });
+    Route::get("show_file", function () {
+        $pathToFile = public_path("images/students/Anees CV.pdf");
+        return response()->file($pathToFile);
+
+        return response()->file($pathToFile, $headers);
+    });
+    //End lesson 102
+
+    // Lesson 103
+    Route::get('/stream', function () {
+        return response()->stream(function (): void {
+            $data = [
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+                'developer',
+                ' admin',
+            ];
+            foreach ($data as $string) {
+                echo $string;
+                ob_flush();
+                flush();
+                sleep(2); // Simulate delay between chunks...
+            }
+        }, 200, ['X-Accel-Buffering' => 'no']);
+    });
+
+    // Lesson 104
+    Route::get('macro', function () {
+        return response()->caps('anees');
+    });
     // Cookie::expire('name');
     Route::fallback(function () {
         return "Not Found!";

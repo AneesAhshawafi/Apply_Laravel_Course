@@ -22,6 +22,23 @@ class StudentController extends Controller
     {
         // $this->Anees();
         $students = Student::orderBy('created_at', 'desc')->paginate(10);
+        // Lesson 102
+        // View Responses
+        // If you need control over the response's status and headers but also need to return a view as the response's content, you should use the view method:
+        // return response()
+        //     ->view('students.index', ['students' => $students], 200)
+        //     ->header('Content-Type', "text/html")
+        //     ->header("Meow", "Meow");
+
+        // // View Stream
+        //  return response()->stream(function () use ($students) {
+        //     foreach ($students->chunk(2) as $chunk) {
+        //         echo view('students.index', ['students' => $chunk])->render();
+        //         ob_flush();
+        //         flush();
+        //         sleep(2); // Wait 2 seconds between chunks...
+        //     }
+        // }, 200, ['X-Accel-Buffering' => 'no']);
         return view('students.index', ['students' => $students]);
     }
 

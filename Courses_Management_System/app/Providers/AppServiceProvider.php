@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Response;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,16 @@ class AppServiceProvider extends ServiceProvider
         // all requests across the entire application share a single rate limit bucket.
         RateLimiter::for('global', function (Request $request) {
             return Limit::perMinute(100)->by('global-key');
+        });
+
+        // Lesson 104:
+        // Response Macros
+        // If you would like to define a custom response that you can re-use in a variety of your 
+        // routes and controllers, you may use the macro method on the Response facade. 
+        // Typically, you should call this method from the boot method of one of your 
+        // application's service providers, such as the App\Providers\AppServiceProvider service provider:
+        Response::macro('caps', function (string $value) {
+            return Response::make(strtoupper($value));
         });
     }
 }
