@@ -11,6 +11,7 @@ use App\Traits\GeneralTraits;
 use App\Models\User;
 use App\Notifications\CreateStudent;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL; //lesson 105
 
 class StudentController extends Controller
 {
@@ -120,6 +121,46 @@ class StudentController extends Controller
     public function show(string $id)
     {
         $student = Student::find($id);
+        // url("/posts/{$post->id}");
+        // return url("/students/{$student->id}");
+        // return url("/students/{$student->name}");
+        // with parameters
+        // return url()->query("/students", ["id" => $student->id]);
+        // return url()->query("/students?name={$student->name}", ["id" => $student->id]);
+        //arrays
+        // return url()->query("/students", ["column" => [$student->id, $student->name]]);
+        // RLs for Named Routes
+        // The route helper may be used to generate URL
+        // return route("students.show", ["student" => $student->id]);
+        // Eloquent Models
+        // return route("students.show", ["student" => $student]);
+        // Signed URLs : gives a unique signuter for every user 
+        // return URL::signedRoute('students.show', ['student' => $student->id]);
+        // return URL::signedRoute('students.show', ['student' => $student]);
+
+        // // Get the current URL without the query string...
+        // echo "current: " . url()->current();
+
+        // // Get the current URL including the query string...
+        // echo "<br>full : " . url()->full();
+        // echo "<br>current: " . URL::current();
+        // echo "current:<br> ";
+        // // Get the previous URL without the query string...
+        // echo "previous: " . url()->previous();
+
+        // echo "<br>previous: " . URL::previous() . "<br>";
+
+        // return URL::signedRoute('students.show', ['student' => $student]);
+        // return URL::signedRoute('unsubscribe', ['user' => 1]);
+        // return URL::signedRoute('unsubscribe', ['user' => 1], absolute: false); ///unsubscribe/1?signature=e5b44c64fb93a68ebda0f18850235025a771dcf972a4ebd3f89fe6d6d26417bb
+        // return URL::signedRoute('unsubscribe', ['user' => 1], absolute: true); //http://localhost/unsubscribe/1?signature=d9b73d64d591e709faf93b9a17b7eb68a572438ad66b500b80d93562d2b707c4
+
+        // Temporary signed route URL
+        return URL::temporarySignedRoute(
+            'unsubscribe',
+            now()->addSecond(10),
+            ['user' => 1]
+        );
         return view('students.show', compact('student'));
     }
 

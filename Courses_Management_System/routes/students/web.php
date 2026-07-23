@@ -343,6 +343,88 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
     Route::get('macro', function () {
         return response()->caps('anees');
     });
+    // lesson 107 Signed URLs
+    Route::get('unsubscribe/{user}', function (Request $request) {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        } else {
+            return "Welcome!!";
+        }
+    })->name("unsubscribe");
+    Route::get("test-session", function (Request $request) {
+        $data = "";
+        // Store a piece of data in the session...
+        // via global session
+        session(["id" => 2, "name" => "anees"]);
+        // or
+        // Via a request instance...
+        $request->session()->put('key', 'value');
+
+        // Retrieve a piece of data from the session... tow ways
+        // way1
+        // echo session("id");
+        // way2
+        // echo $request->session()->get("id");
+
+
+        // Specifying a default value...
+        $value = session('key', 'default');
+        // echo session("key");
+        // return session("name");
+
+        // Retrieving All Session Data
+        // return session()->all();
+
+
+        //         Retrieving a Portion of the Session Data
+        // The only and except methods may be used to retrieve a subset of the session data:
+
+        // $data = $request->session()->only(['name', 'id']);
+
+        // $data = $request->session()->except(['id']);
+
+
+        // "has" method returns true if the item is present and is not null:
+        if ($request->session()->has("id")) {
+            $data = $request->session()->get("id");
+        }
+
+        // "exists" method To determine if an item is present in the session, even if its value is null,
+        if ($request->session()->exists('users')) {
+            $data = $request->session()->get('users');
+        }
+
+
+        // To determine if an item is not present in the session, you may use the missing method.
+        //  The missing method returns true if the item is not present:
+
+        if ($request->session()->missing('users')) {
+            session(["name" => "missing"]);
+            $data = $request->session()->get('name');
+        }
+        // Pushing to Array Session Values
+        // The push method may be used to push a new value onto a session value that is an array.
+        //  For example, if the user.teams key contains an array of team names, you may push a new value onto the array like so:
+
+        $request->session()->push('user.teams', 'developers');
+        $data = $request->session()->get('teams');
+        // Retrieving and Deleting an Item
+        // The pull method will retrieve and delete an item from the session in a single statement:
+        $data = $request->session()->pull('key', 'default');
+
+        //         Icrementing and Decrementing Session Values
+        // If your session data contains an integer you wish to increment or decrement, you may use the increment and decrement methods:
+
+        // $request->session()->increment('count');
+
+        // $request->session()->increment('count', $incrementBy = 2);
+
+        // $request->session()->decrement('count');
+
+        // $request->session()->decrement('count', $decrementBy = 2);
+
+        return $data;
+    });
     // Cookie::expire('name');
     Route::fallback(function () {
         return "Not Found!";
