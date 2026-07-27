@@ -195,6 +195,9 @@ class StudentController extends Controller
             $student->image = 'images/students/' . $imageName;
         }
         $student->save();
+
+        // $request->session()->flash('success', 'تم تعديل بيانات الطالب بنجاح فلاش');
+        // return redirect()->route('students.index');
         return redirect()->route('students.index')->with('success', 'تم تعديل بيانات الطالب بنجاح');
     }
 

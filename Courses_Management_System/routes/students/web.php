@@ -426,6 +426,100 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
         return $data;
     });
     // Cookie::expire('name');
+
+
+
+    // Falsh data - flash session
+    // you also find example in student controller at update function
+    Route::get("/flash", function (Request $request) {
+        $request->session()->flash("status", "Temporary message for just this request");
+        return view("flash_data/flash");
+    });
+
+
+
+
+    // If you need to persist your flash data for several requests, you may use the reflash method, 
+    // which will keep all of the flash data for an additional request.
+    // If you only need to keep specific flash data, you may use the keep method:
+
+    // $request->session()->reflash();
+    // $request->session()->keep(['username', 'email']);
+    Route::get("/reflash_step1", function (Request $request) {
+        $request->session()->flash("status", "Temporary message for just this request");
+        return redirect("/reflash_step2");
+    });
+    Route::get("/reflash_step2", function (Request $request) {
+        // return view("flash_data/flash");
+        $request->session()->reflash();
+        return redirect("/reflash_step3");
+    });
+    Route::get("/reflash_step3", function (Request $request) {
+        return view("flash_data/flash");
+    });
+
+    // keep: If you only need to keep specific flash data, you may use the keep method:
+    // $request->session()->keep(['username', 'email']);
+
+    Route::get("/keep_reflash_step1", function (Request $request) {
+        $request->session()->flash("status", "Temporary message for just this request");
+        $request->session()->flash('username', 'anees');
+        $request->session()->flash('password', 'password123');
+        // $request->session()->keep(['username', 'email']);
+        return redirect("/keep_reflash_step2");
+    });
+    Route::get("/keep_reflash_step2", function (Request $request) {
+        // return view("flash_data/flash");
+        // $request->session()->reflash();
+        $request->session()->keep("status", "username", "password");
+
+        //         Deleting Data
+        // The forget method will remove a piece of data from the session. If you would like to remove all data from the session, you may use the flush method:
+
+        // Forget a single key...
+        // $request->session()->forget('username');
+
+        // Forget multiple keys...
+        // $request->session()->forget(['username', 'status']);
+        // Forget all keys
+        // $request->session()->flush();
+        return redirect("/keep_reflash_step3");
+    });
+    Route::get("/keep_reflash_step3", function (Request $request) {
+        return view("flash_data/reflash");
+    });
+
+
+    // Regenerating the Session ID
+    // Regenerating the session ID is often done in order to prevent malicious users from exploiting a session fixation attack on your application.
+
+    // Laravel automatically regenerates the session ID during authentication if you are using one of the Laravel application starter kits or Laravel Fortify; however, if you need to manually regenerate the session ID, you may use the regenerate method:
+    Route::get('/regenerate_session_id', function (Request $request) {
+        // default session id
+        // $data = $request->session()->all();
+        $data = $request->session()->getId();
+        $id = $request->session()->getId();
+        $token = $request->session()->get("_token");
+
+        // regenerate session id
+        $request->session()->regenerate();
+        // $data_after_regenerate = $request->session()->all();
+        $data_after_regenerate_id = $request->session()->getId();
+        $data_after_regenerate_token = $request->session()->get("_token");
+
+
+        // invalidate session id
+        // If you need to regenerate the session ID and remove all data from the session in a single statement, you may use the invalidate method:
+        $request->session()->invalidate();
+        $data_after_invalidate = $request->session()->all();
+        $data_after_invalidate_id = $request->session()->getId();
+        $data_after_invalidate_token = $request->session()->get("_token");
+
+
+        // return ["data" => $data, "data_after_regenerate_id" => $data_after_regenerate_id, "token" => $data_after_regenerate_token, "data_after_invalidate" => $data_after_invalidate];
+        return ["id" => $id, "token" => $token, "data_after_regenerate_id" => $data_after_regenerate_id, "data_after_regenerate_token" => $data_after_regenerate_token, "data_after_invalidate_id" => $data_after_invalidate_id, "data_after_invalidate_token" => $data_after_invalidate_token];
+    });
+
     Route::fallback(function () {
         return "Not Found!";
     });

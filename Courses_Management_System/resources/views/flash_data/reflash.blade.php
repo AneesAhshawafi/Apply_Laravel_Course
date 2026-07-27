@@ -1,0 +1,12 @@
+@if(@session('status'))
+{{session('status')}}
+<br>
+@endif
+@if(@session('username'))
+{{session('username')}}
+<br>
+@endif
+@if(@session('password'))
+{{session('password')}}
+<br>
+@endif
