@@ -9,6 +9,7 @@ use App\Http\Controllers\TrainCourseController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Http\RedirectResponse;
 
@@ -519,6 +520,48 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
         // return ["data" => $data, "data_after_regenerate_id" => $data_after_regenerate_id, "token" => $data_after_regenerate_token, "data_after_invalidate" => $data_after_invalidate];
         return ["id" => $id, "token" => $token, "data_after_regenerate_id" => $data_after_regenerate_id, "data_after_regenerate_token" => $data_after_regenerate_token, "data_after_invalidate_id" => $data_after_invalidate_id, "data_after_invalidate_token" => $data_after_invalidate_token];
     });
+
+
+    // Lesson 113: Session Cache
+    Route::get("session-cache", function (Request $request) {
+        // with Facade: use Illuminate\Support\Facades\Cache;
+        // Cache::put();
+        $session_id = $request->session()->getId();
+        Cache::put(
+            "session_{$session_id}_discount",
+            1000,
+            now()->plus(seconds: 100)
+        );
+        // Cache::get();
+        // Cache::forget();
+        // $request->session()->cache()->put(
+        //     'discount',
+        //     10,
+        //     now()->plus(seconds: 5)
+        // );
+
+        // $discount = $request->session()->cache()->get('discount');
+        // $discount = Cache::get('discount');
+        $discount = Cache::get("session_{$session_id}_discount");
+
+        // echo $discount;
+        return $discount;
+    });
+    Route::get('/check-session-cache', function (Request $request) {
+        // $discount = $request->session()->cache()->get("discount");
+        $discount = Cache::get('discount');
+        return $discount;
+    });
+
+    // Lesson 114: Session Blocking
+    Route::get('/session-blocking', function () {
+        sleep(15);
+        return "session-blocking";
+    })->block($lockSeconds = 10, $waitSeconds = 15); //default 10 seconds
+
+    Route::get('/session-blocking1', function () {
+        return "session-blocking1";
+    })->block($lockSeconds = 10, $waitSeconds = 10);
 
     Route::fallback(function () {
         return "Not Found!";
