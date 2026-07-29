@@ -563,6 +563,79 @@ Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_reva
         return "session-blocking1";
     })->block($lockSeconds = 10, $waitSeconds = 10);
 
+
+    // Lesson 115:Cache
+    Route::get("test-cache", function () {
+
+        // 1. Retrieving Data
+        // Cache::get('key', 'default'): Retrieves an item from the cache. You can pass a second argument as a default value (or a closure) if the key does not exist
+        // .
+        // Cache::has('key'): Checks if an item exists in the cache. It returns false if the item doesn't exist or if its value is null
+        // .
+        // Cache::pull('key', 'default'): Retrieves an item from the cache and then immediately deletes it
+        // .
+        // 2. Storing Data
+        // Cache::put('key', 'value', $seconds): Stores an item in the cache for a specified duration (in seconds or as a DateTime instance). If no time is passed, it stores it indefinitely
+        // .
+        // Cache::add('key', 'value', $seconds): An atomic operation that only adds the item to the cache if it does not already exist. Returns true if added, and false otherwise
+        // .
+        // Cache::forever('key', 'value'): Stores an item in the cache permanently. It must be manually removed later
+        // .
+        // 3. Retrieve & Store Simultaneously
+        // Cache::remember('key', $seconds, closure): Retrieves an item from the cache. If it doesn't exist, it executes the given closure, stores the result for the specified duration, and returns the result
+        // .
+        // Cache::rememberForever('key', closure): Similar to remember, but stores the result permanently if it wasn't found
+        // .
+        // Cache::flexible('key', [fresh_seconds, stale_seconds], closure): Implements the "stale-while-revalidate" pattern. It serves the cached data immediately if it's within the "fresh" period. If it's in the "stale" period, it serves the stale data to the user while recalculating the new value in the background via a deferred function
+        // .
+        // 4. Modifying Data
+        // Cache::increment('key', $amount): Increases the value of an integer item in the cache
+        // .
+        // Cache::decrement('key', $amount): Decreases the value of an integer item in the cache
+        // .
+        // 5. Removing Data
+        // Cache::forget('key'): Removes a specific item from the cache
+        // . You can also remove items by passing a zero or negative expiration time to the put method
+        // .
+        // Cache::flush(): Clears the entire cache. Note: This ignores cache prefixes and removes all entries, which can affect shared caches
+        // .
+        // 6. Managing Cache Stores & Helper
+        // Cache::store('name'): Allows you to access a specific cache store (e.g., redis, file, memcached) defined in your configuration instead of the default one
+        // .
+        // cache(): A global helper function. Calling cache('key') retrieves a value, while passing an array like cache(['key' => 'value'], $seconds) stores values
+        // .
+        // 7. Advanced Caching Features
+        // Cache::memo(): Temporarily stores resolved cache values in memory during a single request or job execution. Subsequent calls for the same key hit the memory instead of the external cache store, speeding up performance
+        // .
+        // Cache::tags(['tag1', 'tag2']): Allows you to tag related items and flush them together (e.g., Cache::tags('authors')->flush()). Not supported by file, dynamodb, or database drivers
+        // .
+        // Cache::lock('key', 10)->get(closure): Creates an atomic lock to manage distributed processes and prevent race conditions. The lock can be manually released or will auto-release after a closure executes
+        // .
+        // Cache::withoutOverlapping('key', closure): A concurrency limiter that ensures only one instance of a closure is running across your infrastructure at a time
+        // .
+        // Cache::funnel('key')->limit(3)->then(...): Provides controlled parallelism by strictly limiting the maximum number of concurrent executions for a specific task
+
+
+        Cache::put("discount", 100, now()->plus(seconds: 100));
+        // Cache::increment("discount", 3);
+        $discount = Cache::get("discount");
+
+        // 8-Cache memorize
+        $value = Cache::memo()->get('discount');
+        // Cache::memo()->put('name', 'Taylor'); // Writes to underlying cache...
+        // Cache::memo()->get('name');           // Hits underlying cache...
+        // Cache::memo()->get('name');           // Memoized, does not hit cache...
+
+        // Cache::memo()->put('name', 'Tim');    // Forgets memoized value, writes new value...
+        // Cache::memo()->get('name');           // Hits underlying cache again...
+
+
+
+        // Cache::forget("discount");
+        // Cache::forget("session_npxxati0EF2jejzkwyZXdoPgR9zl7d1KdyLZNh27_discount");
+        return $value;
+    });
+
     Route::fallback(function () {
         return "Not Found!";
     });
