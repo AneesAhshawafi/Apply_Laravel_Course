@@ -8,6 +8,8 @@ use App\Http\Requests\CoursesRequest;
 use Illuminate\Support\Carbon;
 use Nyholm\Psr7\Response;
 
+use App\Events\AddCourse;
+
 class CoursesController extends Controller
 {
     /**
@@ -122,6 +124,8 @@ class CoursesController extends Controller
             'name' => $request->name,
             'active' => $request->active
         ]);
+        //Make event for adding new course to database
+        event(new AddCourse($request->name));
         // the following tow lines are instead of the third line 
         // $request->session()->flash('success', 'تم إضافة الكورس بنجاح');
         // return redirect()->route('courses.index');

@@ -25,6 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //     'cookie_name',
         // ]);
     })
+
+    // Discover Listeners, if you dont identify the listeners paths, it will discover the difault path which is app/listeners
+    ->withEvents(discover: [
+        __DIR__ . '/../app/Listeners_Domain/Orders/Listeners',
+        __DIR__ . '/../app/Listeners', //if you did not define it here it will be ignored (like the default constructo  )
+    ])
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

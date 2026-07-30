@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Response;
 
+// Lesson 121 Laravel Event Discovery and Manual Registration
+use App\Events\MakeOrderCart; //Event
+use App\Listeners_Domain\Orders\Listeners\SendEmailOnMakeOrder; //Listener
+use Illuminate\Support\Facades\Event;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -55,5 +60,12 @@ class AppServiceProvider extends ServiceProvider
         Response::macro('caps', function (string $value) {
             return Response::make(strtoupper($value));
         });
+
+
+        // // Lesson 121 Laravel Event Discovery and Manual Registration
+        // Event::listen(
+        //     MakeOrderCart::class, //Event
+        //     SendEmailOnMakeOrder::class, //Listener
+        // );
     }
 }
