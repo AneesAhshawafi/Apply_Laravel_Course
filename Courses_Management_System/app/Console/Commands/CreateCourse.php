@@ -29,6 +29,12 @@ class CreateCourse extends Command
         $courseName = $this->argument("coursename");
         Course::create(["name" => $courseName ? $courseName : "Samhoon Course ", "active" => 1]);
         $message = 'new course wes created with the name ';
+        // to call another command
+        // $this->call("command signature", ["key"=> value]);
+
+        // Illuminate\Console\Concerns\CallsCommands::callSilent
+        // Call another console command without output.
+        // $this->callSilent("command signature", ["key" => value]);
         dump($message . $courseName);
     }
 }

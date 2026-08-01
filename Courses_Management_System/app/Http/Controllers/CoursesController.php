@@ -9,6 +9,8 @@ use Illuminate\Support\Carbon;
 use Nyholm\Psr7\Response;
 
 use App\Events\AddCourse;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
 
 class CoursesController extends Controller
 {
@@ -117,15 +119,20 @@ class CoursesController extends Controller
         // return redirect()->away('https://www.google.com');
         // end lesson 101
 
+        // send email
+        Mail::to("alameryanis@gmail.com")->send(new WelcomeMail());
         if (Course::where('name', $request->name)->exists()) {
             return redirect()->back()->withErrors(['name' => 'اسم الكورس موجود بالفعل'])->withInput();
         }
+
         Course::create([
             'name' => $request->name,
             'active' => $request->active
         ]);
         //Make event for adding new course to database
         event(new AddCourse($request->name));
+
+
         // the following tow lines are instead of the third line 
         // $request->session()->flash('success', 'تم إضافة الكورس بنجاح');
         // return redirect()->route('courses.index');
