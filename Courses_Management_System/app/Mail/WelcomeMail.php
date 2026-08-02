@@ -9,17 +9,36 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Mail\Mailables\Headers;
 
 class WelcomeMail extends Mailable
 {
-    use Queueable, SerializesModels;
 
+    use Queueable, SerializesModels;
+    public  $name;
+    public $active;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($name, $active)
     {
-        //
+        $this->name = $name;
+        $this->active = $active == 1 ? "active" : "unactive";
+    }
+
+
+    /**
+     * Get the message headers.
+     */
+    public function headers(): Headers
+    {
+        return new Headers(
+            messageId: 'codyvex-message-id@example.com',
+            references: ['codyvex-previous-message@example.com'],
+            text: [
+                'X-Custom-Header' => 'Custom Value',
+            ],
+        );
     }
 
     /**
@@ -38,7 +57,12 @@ class WelcomeMail extends Mailable
     public function content(): Content
     {
         return new Content(
+            // because $name and active are public, they will be sent automaticly with the view below, we dont need to send them explicity in the view
             view: 'mails.welcome',
+            // with: [
+            //     "name" => $this->name,
+            //     "status" => $this->active,
+            // ]
         );
     }
 

@@ -12,6 +12,9 @@ use App\Events\AddCourse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail;
 
+use Illuminate\Support\Facades\DB;
+// use Carbon\Carbon;
+
 class CoursesController extends Controller
 {
     /**
@@ -120,23 +123,38 @@ class CoursesController extends Controller
         // end lesson 101
 
         // send email
-        Mail::to("alameryanis@gmail.com")->send(new WelcomeMail());
-        if (Course::where('name', $request->name)->exists()) {
-            return redirect()->back()->withErrors(['name' => 'اسم الكورس موجود بالفعل'])->withInput();
+        try {
+            DB::beginTransaction();
+            $name = $request->name;
+            $active = $request->active;
+            // // to one email
+            // Mail::to("alameryanis@gmail.com")->send(new WelcomeMail($name, $active));
+            // to multiple emails
+            Mail::to(["alameryanis@gmail.com", "4nis.dev@gmail.com"])->send(new WelcomeMail($name, $active));
+
+            if (Course::where('name', $request->name)->exists()) {
+                return redirect()->back()->withErrors(['name' => 'اسم الكورس موجود بالفعل'])->withInput();
+            }
+
+            Course::create([
+                'name' => $request->name,
+                'active' => $request->active
+            ]);
+            //Make event for adding new course to database
+            event(new AddCourse($request->name));
+            // test error
+            $x = 10 / 0;
+            // if succeed
+            DB::commit();
+
+            // the following tow lines are instead of the third line 
+            // $request->session()->flash('success', 'تم إضافة الكورس بنجاح');
+            // return redirect()->route('courses.index');
+            return redirect()->route('courses.index')->with('success', 'تم إضافة الكورس بنجاح');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['error' => $e->getMessage()])->withInput();
         }
-
-        Course::create([
-            'name' => $request->name,
-            'active' => $request->active
-        ]);
-        //Make event for adding new course to database
-        event(new AddCourse($request->name));
-
-
-        // the following tow lines are instead of the third line 
-        // $request->session()->flash('success', 'تم إضافة الكورس بنجاح');
-        // return redirect()->route('courses.index');
-        return redirect()->route('courses.index')->with('success', 'تم إضافة الكورس بنجاح');
     }
 
     /**

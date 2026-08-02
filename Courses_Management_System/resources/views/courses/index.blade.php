@@ -34,7 +34,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                @if(Session::has('success'))
+                @if (Session::has('success'))
                     <div class="alert alert-success" role="alert" style="margin: 5px;">
                         {{ Session::get('success') }}
                     </div>
@@ -63,7 +63,7 @@
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="height: 300px;">
                 <table id="example2" class="table table-bordered table-hover">
-                    @if(isset($courses) && $courses->isNotEmpty())
+                    @if (isset($courses) && $courses->isNotEmpty())
                         <thead>
                             <tr>
 
@@ -75,11 +75,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($courses as $course)
+                            @foreach ($courses as $course)
                                 <tr>
                                     <td>{{ $course->name }}</td>
                                     <td>
-                                        @if($course->active)
+                                        @if ($course->active)
                                             <span class="badge badge-active">
                                                 <span class=""></span> {{ __('courses/index.status.active') }}
                                             </span>
@@ -106,7 +106,7 @@
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
-                                        <a href="{{route('courses.delete', $course->id)}}" class="btn btn-sm btn-warning"
+                                        <a href="{{ route('courses.delete', $course->id) }}" class="btn btn-sm btn-warning"
                                             style="margin: 5px;" title="{{ __('courses/index.actions.move_to_trash') }}">
                                             <i class="fas fa-trash"></i>
                                         </a>

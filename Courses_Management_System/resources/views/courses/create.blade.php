@@ -1,6 +1,6 @@
 @extends('master')
 @section('title')
-إضافة كورس
+    إضافة كورس
 @endsection
 
 @section('active-nav')
@@ -30,42 +30,49 @@
     </li>
 @endsection
 @section('content')
- <!-- general form elements -->
-            <div class="card card-primary" style="width: 80%;">
-              <div class="card-header">
-                <h3 class="card-title" style="float: right;"  >إضافة كورس</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              <form action="{{route('courses.store')}}" method="POST">
-                @csrf
-                <div class="card-body">
-                  <div class="form-group">
+    <!-- general form elements -->
+    @if (Session::has('error'))
+        <div class="alert alert-error" role="alert" style="margin: 5px;">
+            {{ Session::get('error') }}
+        </div>
+    @endif
+    <div class="card card-primary" style="width: 80%;">
+        <div class="card-header">
+            <h3 class="card-title" style="float: right;">إضافة كورس</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form action="{{ route('courses.store') }}" method="POST">
+            @csrf
+            <div class="card-body">
+                <div class="form-group">
                     <label for="exampleInputEmail1">اسم الكورس</label>
-                    <input type="text" class="form-control" name="name" value="{{old('name')}}" id="exampleInputEmail1" placeholder="ادخل اسم الكورس">
+                    <input type="text" class="form-control" name="name" value="{{ old('name') }}"
+                        id="exampleInputEmail1" placeholder="ادخل اسم الكورس">
                     @error('name')
-                    <div class="alert alert-danger">{{ $message }}</div>
+                        <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
-                  </div>
-                  <div class="form-group">
+                </div>
+                <div class="form-group">
                     <label for="exampleInputPassword1">الحالة</label>
                     <select class="form-control" name="active" id="exampleInputPassword1">
                         <option value="">اختر الحالة</option>
                         <option value="1" {{ old('active') == '1' ? 'selected' : '' }}>فعال</option>
-                        <option value="0" {{ old('active') == '0' and old('active') != '' ? 'selected' : '' }}>معطل</option>
+                        <option value="0" {{ old('active') == '0' and (old('active') != '' ? 'selected' : '') }}>معطل
+                        </option>
                     </select>
                     @error('active')
-                    <div class="alert alert-danger">{{$message}}</div>
+                        <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
-                  </div>
-                 
                 </div>
-                <!-- /.card-body -->
 
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form>
             </div>
-            <!-- /.card -->
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+    <!-- /.card -->
 @endsection
