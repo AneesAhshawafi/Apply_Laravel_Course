@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,3 +19,23 @@ Route::get('/test-api', function () {
         "email" => "example@domain.com"
     ]);
 })->middleware('auth:sanctum');
+
+// Manual Api
+// Route::get("/courses", [CourseController::class, "index"]);
+// Route::get("/courses/{id}", [CourseController::class, "show"]);
+// Route::post("/courses", [CourseController::class, "store"]);
+// Route::put("/courses/{id}", [CourseController::class, "update"]);
+// Route::delete("/courses/{id}", [CourseController::class, "destroy"]);
+Route::delete("/delete_course/{id}", [CourseController::class, "delete"]);
+Route::get("/trashed_courses", [CourseController::class, "trash"]);
+Route::get("/restore_course/{id}", [CourseController::class, "restore"]);
+
+
+
+// Automatic Api Routes generation
+Route::apiResource("courses", CourseController::class);//this automaticly generate the following routes:
+// Route::get("/courses", [CourseController::class, "index"]);
+// Route::get("/courses/{id}", [CourseController::class, "show"]);
+// Route::post("/courses", [CourseController::class, "store"]);
+// Route::put("/courses/{id}", [CourseController::class, "update"]);
+// Route::delete("/courses/{id}", [CourseController::class, "destroy"]);
