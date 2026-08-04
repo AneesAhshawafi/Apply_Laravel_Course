@@ -23,6 +23,7 @@ class CoursesController extends Controller
     public function index()
     {
         // samhoon();
+
         return view('courses.index', [
             'courses' => Course::orderBy('id', 'desc')->get()
         ]);

@@ -1,0 +1,642 @@
+<?php
+
+use App\Http\Controllers\CoursesController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Models\Course;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TrainCourseController;
+use App\Http\Controllers\WelcomeController;
+use App\Models\User;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
+
+use Illuminate\Http\RedirectResponse;
+
+use Illuminate\Http\Request;
+use Psr\Http\Message\ServerRequestInterface; //for PSR-7 
+Route::middleware('cache.headers:public;max_age=30;s_maxage=300;stale_while_revalidate=600;etag')->group(function () {});
+
+Route::get('welcome', [WelcomeController::class, 'index'])->middleware(['throttle:limit3']);
+// Route::get('welcomeFacde', [WelcomeController::class, 'myCustomFacade']);
+
+route::get('hi', function () {})->middleware('PoliceMan');
+//redirect route
+// Route::redirect('welcome', "hi", 302);
+// Route::permanentRedirect('welcome', "hi");
+
+//redirect response
+Route::get('/welcome', function () {
+    return redirect('hi');
+});
+// Accessing the current route
+Route::get('getmyrouteinfo/{username}', [WelcomeController::class, "getMyRouteInfo"])->name("get_myroute_info");
+
+Route::get('/', function () {
+    return view('home');
+});
+
+// // Language Switcher Route
+// Route::get('change-language/{lang}', function ($lang) {
+//     if (in_array($lang, ['ar', 'en'])) {
+//         session(['locale' => $lang]);
+//     }
+//     return redirect()->back();
+// })->name('change.language');
+
+route::get('ar', function () {
+    session()->put('locale', 'ar');
+    return redirect()->back();
+})->name('ar');
+
+route::get('en', function () {
+    session()->put('locale', 'en');
+    return redirect()->back();
+})->name('en');
+
+
+
+Route::get('home', [HomeController::class, 'index'])->name('home');
+Route::get('courses/trash', [CoursesController::class, 'trash'])->name('courses.trash');
+Route::get('courses/delete/{id}', [CoursesController::class, 'delete'])->name('courses.delete');
+Route::get('courses/restore/{id}', [CoursesController::class, 'restore'])->name('courses.restore');
+Route::resource('courses', CoursesController::class);
+Route::get('courses', [CoursesController::class, 'index'])->name('courses.indexx');
+
+route::get('students/trash', [StudentController::class, 'trash'])->name('students.trash');
+route::get('students/delete/{id}', [StudentController::class, 'delete'])->name('students.delete');
+route::get('students/restore/{id}', [StudentController::class, 'restore'])->name('students.restore');
+route::post('students/search', [StudentController::class, 'search'])->name('students.search');
+Route::resource('students', StudentController::class);
+
+route::get('training_courses/trash', [TrainCourseController::class, 'trash'])->name('training_courses.trash');
+route::get('training_courses/delete/{id}', [TrainCourseController::class, 'delete'])->name('training_courses.delete');
+route::get('training_courses/restore/{id}', [TrainCourseController::class, 'restore'])->name('training_courses.restore');
+route::get('training_courses/add_student/{id}', [TrainCourseController::class, 'addStudent'])->name('training_courses.add_student');
+route::post('training_courses/add_student_store/{id}', [TrainCourseController::class, 'addStudentStore'])->name('training_courses.add_student_store');
+route::get('training_courses/edit_enrolment/{studentId}/{trainCourseId}', [TrainCourseController::class, 'editEnrolment'])->name('training_courses.edit_enrolment');
+route::post('training_courses/edit_enrolment_update/{id}', [TrainCourseController::class, 'editEnrolmentUpdate'])->name('training_courses.edit_enrolment_update');
+route::get('training_courses/delete_student/{studentId}/{trainCourseId}', [TrainCourseController::class, 'deleteStudent'])->name('training_courses.delete_student');
+route::get('training_courses/show_student/{studentId}/{trainCourseId}', [TrainCourseController::class, 'showStudent'])->name('training_courses.show_student');
+Route::resource('training_courses', TrainCourseController::class);
+
+
+Route::get("/tryCache", function () {
+    return "Cache";
+});
+
+//Interacting with the request
+Route::get("/testrequest", function (Request $request) {
+    // Type of headers:
+    //1- Authorization
+    // 2-User-Agent
+    // 3-Accept
+    // 4-Content-Type
+    // 5-Set-Cookie
+    // 6-Cache-Control
+    // 7-Content-Length
+    // 8-Content-Encoding
+    // 9- X-CSRF-TOKEN
+    // 10- X-App-Version
+    $value1 = null;
+    $value2 = null;
+    // if ($request->hasHeader('Authorization')) {
+    //     $value2 = $request->header('Authorization', 'default');
+    //     $value1 = $request->header('Authorization');
+    // }
+    // if ($request->hasHeader('User-Agent')) {
+    //     $value2 = $request->header('User-Agent', 'default');
+    //     $value1 = $request->header('User-Agent');
+    // }
+    // if ($request->hasHeader('Accept')) {
+    //     $value2 = $request->header('Accept', 'default');
+    //     $value1 = $request->header('Accept');
+    // }
+    // if ($request->hasHeader('Content-Type')) {
+    //     $value2 = $request->header('Content-Type', 'default');
+    //     $value1 = $request->header('Content-Type');
+    // }
+    // if ($request->hasHeader('Set-Cookie')) {
+    //     $value2 = $request->header('Set-Cookie', 'default');
+    //     $value1 = $request->header('Set-Cookie');
+    // }
+    // if ($request->hasHeader('Cache-Control')) {
+    //     $value2 = $request->header('Cache-Control', 'default');
+    //     $value1 = $request->header('Cache-Control');
+    // }
+    // if ($request->hasHeader('Content-Length')) {
+    //     $value2 = $request->header('Content-Length', 'default');
+    //     $value1 = $request->header('Content-Length');
+    // }
+    // if ($request->hasHeader('Content-Encoding')) {
+    //     $value2 = $request->header('Content-Encoding', 'default');
+    //     $value1 = $request->header('Content-Encoding');
+    // }
+    // if ($request->hasHeader('X-CSRF-TOKEN')) {
+    //     $value2 = $request->header('X-CSRF-TOKEN', 'default');
+    //     $value1 = $request->header('X-CSRF-TOKEN');
+    // }
+    // if ($request->hasHeader('X-App-Version')) {
+    //     $value2 = $request->header('X-App-Version', 'default');
+    //     $value1 = $request->header('X-App-Version');
+    // }
+
+
+    if ($request->header("AppKey") == "Anees") {
+        return response()->json(["data" => "Accepted Authorization"]);
+    } else {
+        return response()->json(["data" => "Unauthorizde"]);
+    }
+    return [
+        "header1" => $value1,
+        "header2" => $value2,
+        "ip" => $request->ip(),
+        "ips" => $request->ips(),
+        "all" => $request->all(),
+        "url" => $request->url(),
+        "fullurl" => $request->fullUrl(),
+        "uri" => $request->uri(),
+        "path" => $request->path(),
+        "method" => $request->method(),
+        "host" => $request->host(),
+        "server" => $request->server()
+
+    ];
+});
+
+Route::get("/sendheader", function (Request $request) {
+    return response("Hello Anees")->header("AppName", "Exchnage")->header("version", 3);
+});
+
+Route::get("/sendheadertome", function (Request $request) {
+    $request->headers->set('XAppName', 'Anees Soft');
+    $headerValue = $request->header("XAppName");
+
+    // return response("Hello Anees")->header("AppName", "Exchnage")->header("version", 3);
+});
+
+Route::get("/content-negotiation", function (Request $request) {
+    $accepetedContentTypes = $request->getAcceptableContentTypes();
+    $preferred = $request->prefers(['text/html', 'application/json']);
+    return response()->json(["preferred" => $preferred, "accepetedContentTypes" => $accepetedContentTypes]);
+    if ($request->expectsJson()) {
+        return response()->json(["preferred" => $preferred, "accepetedContentTypes" => $accepetedContentTypes]);
+    }
+    if ($request->accepts(["text/html", "application/xml"]))
+        return [
+            "accepted types" => $accepetedContentTypes
+        ];
+});
+
+Route::get("PSR-7", function (ServerRequestInterface $request) {
+    $method = $request->getMethod();
+    $url = $request->getUri();
+    $header = $request->getHeaders();
+
+    return response()->json([
+        "method" => $method,
+        "url" => $url,
+        "headers" => $header
+    ]);
+});
+
+Route::get('/test-response-object', function () {
+    return response('Hello World', 200)
+        ->header('Content-Type', 'text/plain');
+});
+Route::get('/test-response-json', function () {
+    return response()->json([
+        "name" => "name",
+        "ip" => "ip"
+    ]);
+});
+
+// Attaching Headers to Responses
+// way 1
+// Route::get('/test-response-attaching-headers', function () {
+//     return response([
+//         "name" => "name",
+//         "ip" => "ip"
+//     ])
+//         ->header('Content-Type', "text/html")
+//         ->header('accept', 'application/json')
+//         ->header('X-Header-Two', 'Header Value');
+// });
+// way 2
+
+Route::get('/test-response-attaching-headers', function () {
+    return response([
+        "name" => "name",
+        "ip" => "ip"
+    ])->withHeaders([
+        'Content-Type' => "text/html",
+        'accept' => 'application/json',
+        'X-Header-Two' => 'Header Value'
+    ]);
+
+    // // Removing headers
+
+    // return response($content)->withoutHeader('X-Debug');
+
+    // return response($content)->withoutHeader(['X-Debug', 'X-Powered-By']);
+});
+
+
+
+Route::get('/user/{user}', function (User $user) {
+    return $user;
+});
+
+Route::get("/cookies", function () {
+
+    // return response('Hello World')->cookie(
+    //     'nameStu',
+    //     'anees',
+    //     1
+    // );
+    $cookie = Cookie(
+        'name',
+        'value',
+        1, //minutes
+        "path", //path
+        null, //domain
+        true, //secure
+        true,
+    ); //you can reuse it whenever you want inside this Route only 
+    return response('Hello World')->cookie(
+        $cookie
+    );
+    return response('Hello World')->cookie(
+        'name',
+        'value',
+        1, //minutes
+        "path", //path
+        null, //domain
+        true, //secure
+        true, //httpOnly
+    );
+    // // Removing cookie
+    // return response('Hello World')->withoutCookie('name');
+});
+Cookie::queue('name', 'value', 2); //It is activated with the first request the app recieve
+
+// If you do not yet have an instance of the outgoing response, you may use the Cookie facade's expire method to expire a cookie:
+
+//Lesson 102
+Route::get('jsonp', function (Request $request) {
+    return response()->json([
+        'name' => 'name',
+        'age' => 12,
+    ])->withCallback($request->input("callback"));
+});
+Route::get("force_download_file", function () {
+    $pathToFile = public_path("images/students/Anees CV.pdf");
+    // return response()->download($pathToFile);
+
+    return response()->download($pathToFile, "Anees CV.pdf", ["Content-type" => "application/pdf"]);
+});
+Route::get("show_file", function () {
+    $pathToFile = public_path("images/students/Anees CV.pdf");
+    return response()->file($pathToFile);
+
+    return response()->file($pathToFile, $headers);
+});
+//End lesson 102
+
+// Lesson 103
+Route::get('/stream', function () {
+    return response()->stream(function (): void {
+        $data = [
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+            'developer',
+            ' admin',
+        ];
+        foreach ($data as $string) {
+            echo $string;
+            ob_flush();
+            flush();
+            sleep(2); // Simulate delay between chunks...
+        }
+    }, 200, ['X-Accel-Buffering' => 'no']);
+});
+
+// Lesson 104
+Route::get('macro', function () {
+    return response()->caps('anees');
+});
+// lesson 107 Signed URLs
+Route::get('unsubscribe/{user}', function (Request $request) {
+    if (! $request->hasValidSignature()) {
+        abort(401);
+    } else {
+        return "Welcome!!";
+    }
+})->name("unsubscribe");
+Route::get("test-session", function (Request $request) {
+    $data = "";
+    // Store a piece of data in the session...
+    // via global session
+    session(["id" => 2, "name" => "anees"]);
+    // or
+    // Via a request instance...
+    $request->session()->put('key', 'value');
+
+    // Retrieve a piece of data from the session... tow ways
+    // way1
+    // echo session("id");
+    // way2
+    // echo $request->session()->get("id");
+
+
+    // Specifying a default value...
+    $value = session('key', 'default');
+    // echo session("key");
+    // return session("name");
+
+    // Retrieving All Session Data
+    // return session()->all();
+
+
+    //         Retrieving a Portion of the Session Data
+    // The only and except methods may be used to retrieve a subset of the session data:
+
+    // $data = $request->session()->only(['name', 'id']);
+
+    // $data = $request->session()->except(['id']);
+
+
+    // "has" method returns true if the item is present and is not null:
+    if ($request->session()->has("id")) {
+        $data = $request->session()->get("id");
+    }
+
+    // "exists" method To determine if an item is present in the session, even if its value is null,
+    if ($request->session()->exists('users')) {
+        $data = $request->session()->get('users');
+    }
+
+
+    // To determine if an item is not present in the session, you may use the missing method.
+    //  The missing method returns true if the item is not present:
+
+    if ($request->session()->missing('users')) {
+        session(["name" => "missing"]);
+        $data = $request->session()->get('name');
+    }
+    // Pushing to Array Session Values
+    // The push method may be used to push a new value onto a session value that is an array.
+    //  For example, if the user.teams key contains an array of team names, you may push a new value onto the array like so:
+
+    $request->session()->push('user.teams', 'developers');
+    $data = $request->session()->get('teams');
+    // Retrieving and Deleting an Item
+    // The pull method will retrieve and delete an item from the session in a single statement:
+    $data = $request->session()->pull('key', 'default');
+
+    //         Icrementing and Decrementing Session Values
+    // If your session data contains an integer you wish to increment or decrement, you may use the increment and decrement methods:
+
+    // $request->session()->increment('count');
+
+    // $request->session()->increment('count', $incrementBy = 2);
+
+    // $request->session()->decrement('count');
+
+    // $request->session()->decrement('count', $decrementBy = 2);
+
+    return $data;
+});
+// Cookie::expire('name');
+
+
+
+// Falsh data - flash session
+// you also find example in student controller at update function
+Route::get("/flash", function (Request $request) {
+    $request->session()->flash("status", "Temporary message for just this request");
+    return view("flash_data/flash");
+});
+
+
+
+
+// If you need to persist your flash data for several requests, you may use the reflash method, 
+// which will keep all of the flash data for an additional request.
+// If you only need to keep specific flash data, you may use the keep method:
+
+// $request->session()->reflash();
+// $request->session()->keep(['username', 'email']);
+Route::get("/reflash_step1", function (Request $request) {
+    $request->session()->flash("status", "Temporary message for just this request");
+    return redirect("/reflash_step2");
+});
+Route::get("/reflash_step2", function (Request $request) {
+    // return view("flash_data/flash");
+    $request->session()->reflash();
+    return redirect("/reflash_step3");
+});
+Route::get("/reflash_step3", function (Request $request) {
+    return view("flash_data/flash");
+});
+
+// keep: If you only need to keep specific flash data, you may use the keep method:
+// $request->session()->keep(['username', 'email']);
+
+Route::get("/keep_reflash_step1", function (Request $request) {
+    $request->session()->flash("status", "Temporary message for just this request");
+    $request->session()->flash('username', 'anees');
+    $request->session()->flash('password', 'password123');
+    // $request->session()->keep(['username', 'email']);
+    return redirect("/keep_reflash_step2");
+});
+Route::get("/keep_reflash_step2", function (Request $request) {
+    // return view("flash_data/flash");
+    // $request->session()->reflash();
+    $request->session()->keep("status", "username", "password");
+
+    //         Deleting Data
+    // The forget method will remove a piece of data from the session. If you would like to remove all data from the session, you may use the flush method:
+
+    // Forget a single key...
+    // $request->session()->forget('username');
+
+    // Forget multiple keys...
+    // $request->session()->forget(['username', 'status']);
+    // Forget all keys
+    // $request->session()->flush();
+    return redirect("/keep_reflash_step3");
+});
+Route::get("/keep_reflash_step3", function (Request $request) {
+    return view("flash_data/reflash");
+});
+
+
+// Regenerating the Session ID
+// Regenerating the session ID is often done in order to prevent malicious users from exploiting a session fixation attack on your application.
+
+// Laravel automatically regenerates the session ID during authentication if you are using one of the Laravel application starter kits or Laravel Fortify; however, if you need to manually regenerate the session ID, you may use the regenerate method:
+Route::get('/regenerate_session_id', function (Request $request) {
+    // default session id
+    // $data = $request->session()->all();
+    $data = $request->session()->getId();
+    $id = $request->session()->getId();
+    $token = $request->session()->get("_token");
+
+    // regenerate session id
+    $request->session()->regenerate();
+    // $data_after_regenerate = $request->session()->all();
+    $data_after_regenerate_id = $request->session()->getId();
+    $data_after_regenerate_token = $request->session()->get("_token");
+
+
+    // invalidate session id
+    // If you need to regenerate the session ID and remove all data from the session in a single statement, you may use the invalidate method:
+    $request->session()->invalidate();
+    $data_after_invalidate = $request->session()->all();
+    $data_after_invalidate_id = $request->session()->getId();
+    $data_after_invalidate_token = $request->session()->get("_token");
+
+
+    // return ["data" => $data, "data_after_regenerate_id" => $data_after_regenerate_id, "token" => $data_after_regenerate_token, "data_after_invalidate" => $data_after_invalidate];
+    return ["id" => $id, "token" => $token, "data_after_regenerate_id" => $data_after_regenerate_id, "data_after_regenerate_token" => $data_after_regenerate_token, "data_after_invalidate_id" => $data_after_invalidate_id, "data_after_invalidate_token" => $data_after_invalidate_token];
+});
+
+
+// Lesson 113: Session Cache
+Route::get("session-cache", function (Request $request) {
+    // with Facade: use Illuminate\Support\Facades\Cache;
+    // Cache::put();
+    $session_id = $request->session()->getId();
+    Cache::put(
+        "session_{$session_id}_discount",
+        1000,
+        now()->plus(seconds: 100)
+    );
+    // Cache::get();
+    // Cache::forget();
+    // $request->session()->cache()->put(
+    //     'discount',
+    //     10,
+    //     now()->plus(seconds: 5)
+    // );
+
+    // $discount = $request->session()->cache()->get('discount');
+    // $discount = Cache::get('discount');
+    $discount = Cache::get("session_{$session_id}_discount");
+
+    // echo $discount;
+    return $discount;
+});
+Route::get('/check-session-cache', function (Request $request) {
+    // $discount = $request->session()->cache()->get("discount");
+    $discount = Cache::get('discount');
+    return $discount;
+});
+
+// Lesson 114: Session Blocking
+Route::get('/session-blocking', function () {
+    sleep(15);
+    return "session-blocking";
+})->block($lockSeconds = 10, $waitSeconds = 15); //default 10 seconds
+
+Route::get('/session-blocking1', function () {
+    return "session-blocking1";
+})->block($lockSeconds = 10, $waitSeconds = 10);
+
+
+// Lesson 115:Cache
+Route::get("test-cache", function () {
+
+    // 1. Retrieving Data
+    // Cache::get('key', 'default'): Retrieves an item from the cache. You can pass a second argument as a default value (or a closure) if the key does not exist
+    // .
+    // Cache::has('key'): Checks if an item exists in the cache. It returns false if the item doesn't exist or if its value is null
+    // .
+    // Cache::pull('key', 'default'): Retrieves an item from the cache and then immediately deletes it
+    // .
+    // 2. Storing Data
+    // Cache::put('key', 'value', $seconds): Stores an item in the cache for a specified duration (in seconds or as a DateTime instance). If no time is passed, it stores it indefinitely
+    // .
+    // Cache::add('key', 'value', $seconds): An atomic operation that only adds the item to the cache if it does not already exist. Returns true if added, and false otherwise
+    // .
+    // Cache::forever('key', 'value'): Stores an item in the cache permanently. It must be manually removed later
+    // .
+    // 3. Retrieve & Store Simultaneously
+    // Cache::remember('key', $seconds, closure): Retrieves an item from the cache. If it doesn't exist, it executes the given closure, stores the result for the specified duration, and returns the result
+    // .
+    // Cache::rememberForever('key', closure): Similar to remember, but stores the result permanently if it wasn't found
+    // .
+    // Cache::flexible('key', [fresh_seconds, stale_seconds], closure): Implements the "stale-while-revalidate" pattern. It serves the cached data immediately if it's within the "fresh" period. If it's in the "stale" period, it serves the stale data to the user while recalculating the new value in the background via a deferred function
+    // .
+    // 4. Modifying Data
+    // Cache::increment('key', $amount): Increases the value of an integer item in the cache
+    // .
+    // Cache::decrement('key', $amount): Decreases the value of an integer item in the cache
+    // .
+    // 5. Removing Data
+    // Cache::forget('key'): Removes a specific item from the cache
+    // . You can also remove items by passing a zero or negative expiration time to the put method
+    // .
+    // Cache::flush(): Clears the entire cache. Note: This ignores cache prefixes and removes all entries, which can affect shared caches
+    // .
+    // 6. Managing Cache Stores & Helper
+    // Cache::store('name'): Allows you to access a specific cache store (e.g., redis, file, memcached) defined in your configuration instead of the default one
+    // .
+    // cache(): A global helper function. Calling cache('key') retrieves a value, while passing an array like cache(['key' => 'value'], $seconds) stores values
+    // .
+    // 7. Advanced Caching Features
+    // Cache::memo(): Temporarily stores resolved cache values in memory during a single request or job execution. Subsequent calls for the same key hit the memory instead of the external cache store, speeding up performance
+    // .
+    // Cache::tags(['tag1', 'tag2']): Allows you to tag related items and flush them together (e.g., Cache::tags('authors')->flush()). Not supported by file, dynamodb, or database drivers
+    // .
+    // Cache::lock('key', 10)->get(closure): Creates an atomic lock to manage distributed processes and prevent race conditions. The lock can be manually released or will auto-release after a closure executes
+    // .
+    // Cache::withoutOverlapping('key', closure): A concurrency limiter that ensures only one instance of a closure is running across your infrastructure at a time
+    // .
+    // Cache::funnel('key')->limit(3)->then(...): Provides controlled parallelism by strictly limiting the maximum number of concurrent executions for a specific task
+
+
+    Cache::put("discount", 100, now()->plus(seconds: 100));
+    // Cache::increment("discount", 3);
+    $discount = Cache::get("discount");
+
+    // 8-Cache memorize
+    $value = Cache::memo()->get('discount');
+    // Cache::memo()->put('name', 'Taylor'); // Writes to underlying cache...
+    // Cache::memo()->get('name');           // Hits underlying cache...
+    // Cache::memo()->get('name');           // Memoized, does not hit cache...
+
+    // Cache::memo()->put('name', 'Tim');    // Forgets memoized value, writes new value...
+    // Cache::memo()->get('name');           // Hits underlying cache again...
+
+
+
+    // Cache::forget("discount");
+    // Cache::forget("session_npxxati0EF2jejzkwyZXdoPgR9zl7d1KdyLZNh27_discount");
+    return $value;
+});
+
+Route::fallback(function () {
+    return "Not Found!";
+});

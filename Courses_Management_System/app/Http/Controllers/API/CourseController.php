@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CoursesRequest;
 use Illuminate\Http\Request;
+use App\Http\Resources\CourseResource;
 
 use App\Models\Course;
 
@@ -21,13 +23,26 @@ class CourseController extends Controller
     {
         $courses = Course::orderBy('id', 'desc')->paginate(8);
         // samhoon();
-        return response()->json(
-            [
-                "status" => true,
-                "data" => $courses
-            ],
-            200
-        );
+        // return response()->json(
+        //     [
+        //         "status" => true,
+        //         "data" => $courses,
+        //     ],
+        //     200
+        // );
+        // Transform the underlying collection items while keeping pagination structure
+        // Method 1
+        // $courses->setCollection(
+        //     CourseResource::collection($courses->getCollection())->collection
+        // );
+        // Method 2
+        // return CourseResource::collection($courses)
+        //     ->additional([
+        //         'status' => true,
+        //     ]);
+        return ApiResponse::send(200, true, "", CourseResource::collection($courses), "");
+        return CourseResource::collection($courses);
+        // return "";
     }
 
     /**
@@ -62,10 +77,17 @@ class CourseController extends Controller
                 "message" => "The specific course does not exist"
             ], 404);
         }
-        return response()->json([
-            "status" => true,
-            "data" => $course
-        ], 200);
+        // return response()->json([
+        //     "status" => true,
+        //     "data" => $course
+        // ], 200);
+        // return response()->json([
+        //     "status" => true,
+        //     "data" => new CourseResource($course)
+        // ], 200);
+        // return new CourseResource($course);
+
+        return ApiResponse::send(200, true, "", new CourseResource($course), "");
     }
 
     /**

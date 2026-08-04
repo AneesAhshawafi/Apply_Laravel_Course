@@ -1,31 +1,28 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CourseController;
-
+use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-// Authentication Routes
-Route::post("/register", [AuthController::class, "register"]);
-Route::post("/login", [AuthController::class, "login"]);
-Route::get("/logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 
 
-// Other
-Route::get('/test-api', function () {
 
-    return response()->json([
-        "name" => "Anees",
-        "email" => "example@domain.com"
-    ]);
-})->middleware('auth:sanctum');
+Route::prefix("v2")->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->middleware('auth:sanctum');
 
+    Route::post('/signup', [LoginController::class, 'signUp'])->name("signup");
+    Route::post("/login", [LoginController::class, "login"])->name("login");
 
-Route::middleware("auth:sanctum")->group(function () {
+    Route::get('/test-api', function () {
+
+        return response()->json([
+            "name" => "Anees",
+            "email" => "example@domain.com"
+        ]);
+    })->middleware('auth:sanctum');
 
     // Manual Api
     // Route::get("/courses", [CourseController::class, "index"]);
@@ -46,5 +43,4 @@ Route::middleware("auth:sanctum")->group(function () {
     // Route::post("/courses", [CourseController::class, "store"]);
     // Route::put("/courses/{id}", [CourseController::class, "update"]);
     // Route::delete("/courses/{id}", [CourseController::class, "destroy"]);
-
 });
