@@ -88,18 +88,18 @@ Follow these steps to set up and run the project locally:
 
 ## 📋 Table of Contents & Concepts Overview
 
-1. [Architecture & Request Lifecycle](#1-architecture--request-lifecycle)
-2. [Advanced Routing & Middleware System](#2-advanced-routing--middleware-system)
-3. [Controllers, Requests & Responses](#3-controllers-requests--responses)
-4. [Database & Eloquent ORM](#4-database--eloquent-orm)
-5. [RESTful API & Sanctum Authentication](#5-restful-api--sanctum-authentication)
-6. [Service Container, Providers & Facades](#6-service-container-providers--facades)
-7. [Event-Driven Architecture, Mail & Notifications](#7-event-driven-architecture-mail--notifications)
-8. [Views & Blade Templating](#8-views--blade-templating)
-9. [Sessions & Advanced Caching System](#9-sessions--advanced-caching-system)
-10. [Console Commands & Artisan Utilities](#10-console-commands--artisan-utilities)
-11. [File-by-File Concepts Index](#11-file-by-file-concepts-index)
-12. [Artisan Commands Cheat Sheet](#12-artisan-commands-cheat-sheet)
+1. Architecture & Request Lifecycle
+2. Advanced Routing & Middleware System
+3. Controllers, Requests & Responses
+4. Database & Eloquent ORM
+5. RESTful API & Sanctum Authentication
+6. Service Container, Providers & Facades
+7. Event-Driven Architecture, Mail & Notifications
+8. Views & Blade Templating
+9. Sessions & Advanced Caching System
+10. Console Commands & Artisan Utilities
+11. File-by-File Concepts Index
+12. Artisan Commands Cheat Sheet
 
 ---
 
